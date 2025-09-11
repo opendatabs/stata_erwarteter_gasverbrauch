@@ -1,7 +1,7 @@
 FROM rocker/rstudio:4.5.1
 #FROM rocker/r-base
 ## Using a base image with R4.2.1 and RSTUDIO_VERSION=2022.07.2+576
-WORKDIR /code/data-processing/stata_erwarteter_gasverbrauch
+WORKDIR /code
 
 RUN apt-get update && apt-get install -y \
     sudo \
@@ -25,10 +25,6 @@ RUN echo "r <- getOption('repos'); \
 
 RUN Rscript -e "install.packages(c('httr', 'data.table', 'dplyr', 'lubridate', 'knitr', 'highcharter', 'DT', 'caret', 'tibble', 'rsample', 'jtools'), dependencies = TRUE)"
 
-CMD ["Rscript", "/code/data-processing/stata_erwarteter_gasverbrauch/Gasverbrauch_OGD.R"]
+COPY . /code/
 
-# Docker commands to create image and run container:
-# cd stata_erwarteter_gasverbrauch
-# docker build -t gasverbrauch .
-# cd ..
-# docker run -it --rm -v /data/dev/workspace/data-processing:/code/data-processing -v /mnt/OGD-DataExch/StatA/Gasverbrauch:/code/data-processing/stata_erwarteter_gasverbrauch/data/export --name gasverbrauch gasverbrauch
+CMD ["Rscript", "/code/data-processing/stata_erwarteter_gasverbrauch/Gasverbrauch_OGD.R"]
