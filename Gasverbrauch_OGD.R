@@ -7,7 +7,7 @@ if (file.exists("OL_Gasverbrauch.R")) {
   file.remove("OL_Gasverbrauch.R")
 }
 
-knitr::purl("gasverbrauch/Productive/OL_Gasverbrauch.Rmd", output = "OL_Gasverbrauch.R")
+knitr::purl("OL_Gasverbrauch.Rmd", output = "OL_Gasverbrauch.R")
 
 original_script <- readLines("OL_Gasverbrauch.R")
 
