@@ -27,4 +27,4 @@ RUN Rscript -e "install.packages(c('httr', 'data.table', 'dplyr', 'lubridate', '
 
 COPY . /code/
 
-CMD ["Rscript", "/code/data-processing/stata_erwarteter_gasverbrauch/Gasverbrauch_OGD.R"]
+CMD ["Rscript", "Gasverbrauch_OGD.R"]
