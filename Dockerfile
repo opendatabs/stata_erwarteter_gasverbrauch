@@ -1,6 +1,29 @@
-FROM rocker/rstudio:4.2.1
-#FROM rocker/r-base
-## Using a base image with R4.2.1 and RSTUDIO_VERSION=2022.07.2+576
+########################################################
+#        Renku install section                         #
+
+FROM renku/renkulab-r:4.3.1-0.25.0 as builder
+
+ARG RENKU_VERSION=2.9.4
+
+# Install renku from pypi or from github if a dev version
+RUN if [ -n "$RENKU_VERSION" ] ; then \
+        source .renku/venv/bin/activate ; \
+        currentversion=$(renku --version) ; \
+        if [ "$RENKU_VERSION" != "$currentversion" ] ; then \
+            pip uninstall renku -y ; \
+            gitversion=$(echo "$RENKU_VERSION" | sed -n "s/^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\(rc[[:digit:]]\+\)*\(\.dev[[:digit:]]\+\)*\(+g\([a-f0-9]\+\)\)*\(+dirty\)*$/\4/p") ; \
+            if [ -n "$gitversion" ] ; then \
+                pip install --no-cache-dir --force "git+https://github.com/SwissDataScienceCenter/renku-python.git@$gitversion" ;\
+            else \
+                pip install --no-cache-dir --force renku==${RENKU_VERSION} ;\
+            fi \
+        fi \
+    fi
+
+#             End Renku install section                #
+########################################################
+FROM renku/renkulab-r:4.3.1-0.25.0
+
 WORKDIR /code
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -23,10 +46,11 @@ RUN apt-get update && apt-get install -y \
 ## Uses packages as at 07/03/2024
 RUN echo "r <- getOption('repos'); \
           r['CRAN'] <- 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2024-03-07'; \
-          options(repos = r);" > ~/.Rprofile-
+          options(repos = r);" > ~/.Rprofile
 
-RUN Rscript -e "install.packages(c('httr', 'data.table', 'dplyr', 'lubridate', 'knitr', 'highcharter', 'DT', 'caret', 'tibble', 'rsample', 'jtools'), dependencies = TRUE)"
+COPY install.R /code/
+RUN R -f /code/install.R
 
 COPY . /code/
 
-CMD ["Rscript", "Gasverbrauch_OGD.R"]
+COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
