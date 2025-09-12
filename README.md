@@ -1,6 +1,6 @@
 # Erwarteter Gasverbrauch des Kantons Basel-Stadt
 
-[![launch - renku](https://renkulab.io/renku-badge.svg)](https://renkulab.io/p/statabs/erwarteter-gasverbrauch-basel-stadt/sessions/new?autostart=1) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/git/https%3A%2F%2Fgithub.com%2Fopendatabs%2Fstata_erwarteter_gasverbrauch/HEAD?urlpath=rstudio)
+[![launch - renku](https://renkulab.io/renku-badge.svg)](https://renkulab.io/p/statabs/erwarteter-gasverbrauch-basel-stadt) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/git/https%3A%2F%2Fgithub.com%2Fopendatabs%2Fstata_erwarteter_gasverbrauch/HEAD?urlpath=rstudio)
 
 Welcome to the "Erwarteter Gasverbrauch"-Project! This project is designed to forecast gas consumption in the canton of Basel-Stadt using various data-driven techniques. It's hosted on RenkuLab leveraging the power of reproducibility. 🌟
 
