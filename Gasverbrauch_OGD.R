@@ -11,9 +11,7 @@ knitr::purl("OL_Gasverbrauch.Rmd", output = "OL_Gasverbrauch.R")
 
 original_script <- readLines("OL_Gasverbrauch.R")
 
-modified_script <- gsub(old_line, new_line, original_script, fixed = TRUE)
-
-modified_script <- gsub("100353_gasverbrauch.csv", "data/export/100353_gasverbrauch.csv", modified_script, fixed=TRUE)
+modified_script <- gsub("100353_gasverbrauch.csv", "data/export/100353_gasverbrauch.csv", original_script, fixed=TRUE)
 
 writeLines(modified_script, "OL_Gasverbrauch.R")
 
