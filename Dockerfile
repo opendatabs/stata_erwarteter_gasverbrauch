@@ -24,7 +24,7 @@ RUN if [ -n "$RENKU_VERSION" ] ; then \
 ########################################################
 FROM renku/renkulab-r:4.3.1-0.25.0
 
-WORKDIR /code
+WORKDIR ${HOME}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -44,15 +44,17 @@ RUN apt-get update && apt-get install -y \
     libglpk-dev
 
 
+USER ${NB_USER}
+
 ## Explicitly setting my default RStudio Package Manager Repo
 ## Uses packages as at 07/03/2024
 RUN echo "r <- getOption('repos'); \
           r['CRAN'] <- 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2024-03-07'; \
           options(repos = r);" > ~/.Rprofile
 
-COPY install.R /code/
-RUN R -f /code/install.R
+COPY install.R ${HOME}
+RUN R -f ${HOME}/install.R
 
-COPY . /code/
+COPY . ${HOME}/
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
