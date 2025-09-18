@@ -52,8 +52,8 @@ RUN echo "r <- getOption('repos'); \
 
 USER ${NB_USER}
 
-RUN R -f ${HOME}/install.R
-
 COPY --chown=${NB_USER}:${NB_USER} . ${HOME}/
+
+RUN R -f ${HOME}/install.R
 
 COPY --from=builder --chown=${NB_USER}:${NB_USER} ${HOME}/.renku/venv ${HOME}/.renku/venv
