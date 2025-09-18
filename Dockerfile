@@ -24,10 +24,7 @@ RUN if [ -n "$RENKU_VERSION" ] ; then \
 ########################################################
 FROM renku/renkulab-r:4.3.1-0.25.0
 
-WORKDIR ${HOME}
-
 ARG DEBIAN_FRONTEND=noninteractive
-
 USER root
 
 RUN apt-get update && apt-get install -y \
@@ -46,15 +43,17 @@ RUN apt-get update && apt-get install -y \
 
 USER ${NB_USER}
 
-## Explicitly setting my default RStudio Package Manager Repo
 ## Uses packages as at 07/03/2024
+ENV RSPM_DATE=2025-04-01
 RUN echo "r <- getOption('repos'); \
-          r['CRAN'] <- 'https://packagemanager.rstudio.com/cran/__linux__/jammy/2024-03-07'; \
-          options(repos = r);" > ~/.Rprofile
+          r['CRAN'] <- 'https://packagemanager.rstudio.com/cran/__linux__/jammy/${RSPM_DATE}'; \
+          options(repos = r);" > ~/.Rprofile && \
+          chown ${NB_USER}:${NB_USER} ${HOME}/.Rprofile
 
-COPY install.R ${HOME}
+USER ${NB_USER}
+
 RUN R -f ${HOME}/install.R
 
-COPY . ${HOME}/
+COPY --chown=${NB_USER}:${NB_USER} . ${HOME}/
 
-COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
+COPY --from=builder --chown=${NB_USER}:${NB_USER} ${HOME}/.renku/venv ${HOME}/.renku/venv
