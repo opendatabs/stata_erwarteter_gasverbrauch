@@ -82,7 +82,7 @@ fread("https://data.geo.admin.ch/ch.meteoschweiz.klima/nbcn-tageswerte/nbcn-dail
 
 httr::GET("https://data.bs.ch/explore/dataset/100074/download/?format=csv&timezone=Europe%2FBerlin") %>%
   content(., "text") %>%
-  fread(sep=";") %>%
+  fread(sep = ";") %>%
   select(tag_datum, name, code, kategorie_name) %>%
   filter(name != "Fasnachtsmontag", name != "Fasnachtsmittwoch", name != "Dies Academicus") %>%
   filter(!(tag_datum == "2008-05-01 00:00:00" & name == "Tag der Arbeit")) %>% # Tag der Arbeit doubles with Auffahrt
@@ -132,7 +132,7 @@ rm(events, rd_veranst)
 
 httr::GET("https://data.bs.ch/explore/dataset/100304/download/?format=csv&timezone=Europe%2FBerlin")  %>%
   content(., "text") %>%
-  fread(sep=";") %>%
+  fread(sep = ";") %>%
   group_by(year, month, day) %>%
   filter(year > 2011) %>%
   summarise(gasverbrauch = sum(value, na.rm = T)) %>%
@@ -185,7 +185,7 @@ Data %>%
          Energiespar_Kampagnen = ifelse(as.Date(time) %within% interval(start_date, end_date), 1,0),
          year_month = paste(year, 
                             formatC(month, width = 2, format = "d", flag = "0"),
-                            sep="-"),
+                            sep = "-"),
          Energiespar_Kampagnen_monatlich = ifelse(Energiespar_Kampagnen == 1, as.character(year_month), "0"),
          weekday = factor(weekday, ordered = FALSE)
   ) %>%
@@ -201,7 +201,7 @@ Data %>%
 ```{r message=FALSE, warning=FALSE}
 
 Data_selec_model <- Data_selec %>%
-  filter(time < as.Date("2024-10-31"))
+  filter(time < as.Date("2025-09-30"))
 
 set.seed(12345)
 
@@ -275,12 +275,13 @@ data.frame(
 
 final_model <- lm(gasverbrauch ~ time + as.factor(month) + weekday +
                   as.factor(Ferien_dummy) + as.factor(Feiertage_dummy) + as.factor(Herbstmesse_dummy) +
-                  gre000d0 + hto000d0 + 
-                  # nto000d0 + prestad0 + rre150d0 + sre000d0 + 
+                  gre000d0 + #hto000d0 + nto000d0 + 
+                  prestad0 + #rre150d0 + sre000d0 + 
                   tre200d0 + tre200dn + 
-                  # tre200dx + ure200d0 +
+                  # tre200dx + 
+                  ure200d0 +
                   Energiespar_Kampagnen +
-                  # HGT + I(HGT^2) + 
+                  HGT + #I(HGT^2) + 
                   I(tre200d0^2),
                   data = Data_selec_model)
 
@@ -361,7 +362,7 @@ write.csv2(Data_model_ols %>%
                forecast_lowFI = lwr,
                forecast_highFI = upr
              ),
-           "100353_gasverbrauch.csv", row.names=F, na = "")
+           "100353.csv", row.names=F, na = "")
 
 ```
 
@@ -399,7 +400,7 @@ https://renkulab.io/projects/stata/reproducible/erwarteter-gasverbrauch-basel-st
 </a>
 
 Webartikel:
-<a href="https://www.statistik.bs.ch/aktuell/gasverbrauch-2023.html" target="_parent">
-https://www.statistik.bs.ch/aktuell/gasverbrauch-2023.html </a>
+<a href="https://statistik.bs.ch/artikel/gasverbrauch" target="_parent">
+https://statistik.bs.ch/artikel/gasverbrauch </a>
 
 <br> <br> <br>
